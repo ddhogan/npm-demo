@@ -4,6 +4,7 @@ const app = express();
 
 app.use(express.json());  //this adds a piece of middleware that allow use to parse JSON objects in the body of the request
 
+// The most basic custom middleware
 app.use(function(req, res, next) {
   console.log("Logging..."); //  Let's pretend we want to log every request
   next(); // go to the next function in the req-res pipeline
