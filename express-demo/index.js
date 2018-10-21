@@ -4,6 +4,7 @@ const app = express();
 
 app.use(express.json());  //this adds a piece of middleware that allow use to parse JSON objects in the body of the request
 
+// instead of a DB
 const courses = [
   { id: 1, name: 'course 1' },
   { id: 2, name: 'course 2' },
@@ -11,10 +12,12 @@ const courses = [
 ];
 
 //app.get takes two arguments: the first is the url, and the second is a callback function, called a 'Route Handler'. The Route Handler takes two arguments: request and response.
+// Root
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
+// Index
 app.get('/api/courses', (req, res) => {
   //typically, here we'd get a list of courses from the db and return them, but for now...
   res.send(courses);
@@ -84,5 +87,5 @@ app.delete('/api/courses/:id', (req, res) => {
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`))
 
-// in terminal: `export PORT=5000` to export the environment variable PORT and set it equal to 5000
+// in terminal: `export PORT=5000` to export the environment variable PORT and set it equal to 5000 or whatever
 // in terminal in windows, use 'set'
