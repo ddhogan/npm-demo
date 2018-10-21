@@ -20,6 +20,13 @@ app.get('/api/courses', (req, res) => {
 })
 
 app.post('/api/courses', (req, res) => {
+  // input validation
+  if (!req.body.name || req.body.name.length < 3) {
+    // RESTful convention is to return a response with HTTP status code 400: bad request
+    res.status(400).send("Name is required and should be minimum 3 characters");
+    return;
+  }
+
   const course = {
     id: courses.length + 1,
     name: req.body.name,
