@@ -1,7 +1,7 @@
 {
   "name": "vidly",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is just another exercise in making an test API",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
