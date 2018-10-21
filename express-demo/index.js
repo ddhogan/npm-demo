@@ -70,6 +70,17 @@ function validateCourse(course) {
   return Joi.validate(course, schema);
 }
 
+// Delete
+app.delete('/api/courses/:id', (req, res) => {
+  const course = courses.find(c => c.id === parseInt(req.params.id));
+  if (!course) res.status(404).send('The course with the given ID was not found');
+
+  const index = courses.indexOf(course); //in our courses array, find the index of the course
+  courses.splice(index, 1); //in the array, go to that index and delete one thing
+
+  res.send(course);  //by convention, return the thing that was just deleted
+})
+
 // in a hosted environment, port gets assigned dynamically, so we need to use:
 // environment variable 'PORT'
 // in order to access that, we need node's 'process' module
