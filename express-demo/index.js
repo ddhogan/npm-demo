@@ -22,13 +22,9 @@ app.get('/api/courses', (req, res) => {
 
 // Create
 app.post('/api/courses', (req, res) => {
-  const schema = { //this is the shape of the course object
-    name: Joi.string().min(3).required(),
-  };
-  const result = Joi.validate(req.body, schema);
-  
-  // input validation
-  if (result.error) {
+  // validate the input
+  const { error } = validateCourse(req.body); // Object destructuring, can use {error} instead of result
+  if (error) { // was (result.error)
     // RESTful convention is to return a response with HTTP status code 400: bad request
     res.status(400).send(result.error.details[0].message);
     return;
@@ -55,11 +51,8 @@ app.put('/api/courses/:id', (req, res) => {
   if (!course) res.status(404).send('The course with the given ID was not found');
    
   // validate the input
-  const schema = { //this is the shape of the course object
-    name: Joi.string().min(3).required(),
-  };
-  const result = Joi.validate(req.body, schema);
-  if (result.error) {
+  const { error } = validateCourse(req.body); // Object destructuring, can use {error} instead of result
+  if (error) { // was (result.error)
     // RESTful convention is to return a response with HTTP status code 400: bad request
     res.status(400).send(result.error.details[0].message);
     return;
@@ -69,6 +62,13 @@ app.put('/api/courses/:id', (req, res) => {
   // return the course
   res.send(course);
 })
+
+function validateCourse(course) {
+  const schema = { //this is the shape of the course object
+    name: Joi.string().min(3).required(),
+  };
+  return Joi.validate(course, schema);
+}
 
 // in a hosted environment, port gets assigned dynamically, so we need to use:
 // environment variable 'PORT'
