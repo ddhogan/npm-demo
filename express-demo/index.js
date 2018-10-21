@@ -10,6 +10,12 @@ app.use(function(req, res, next) {
   next(); // go to the next function in the req-res pipeline
 });
 
+// Another middleware, this time for authentication.  Note that they're called in sequence.
+app.use(function(req, res, next) {
+  console.log("Authenticating..."); //  Let's pretend we want to log every request
+  next(); // go to the next function in the req-res pipeline
+});
+
 // instead of a DB
 const courses = [
   { id: 1, name: 'course 1' },
