@@ -1,6 +1,14 @@
 const express = require('express'); //this returns a function, so we'll call it 'express'
 const app = express();
 
+app.use(express.json());  //this adds a piece of middleware that allow use to parse JSON objects in the body of the request
+
+const courses = [
+  { id: 1, name: 'course 1' },
+  { id: 2, name: 'course 2' },
+  { id: 3, name: 'course 3' },
+];
+
 //app.get takes two arguments: the first is the url, and the second is a callback function, called a 'Route Handler'. The Route Handler takes two arguments: request and response.
 app.get('/', (req, res) => {
   res.send('Hello World');
@@ -8,11 +16,22 @@ app.get('/', (req, res) => {
 
 app.get('/api/courses', (req, res) => {
   //typically, here we'd get a list of courses from the db and return them, but for now...
-  res.send(['Course 1', 'Course 2', 'Course 3'])
+  res.send(courses);
+})
+
+app.post('/api/courses', (req, res) => {
+  const course = {
+    id: courses.length + 1,
+    name: req.body.name,
+  };
+  courses.push(course);
+  res.send(course); // by convention, return the thing you just made
 })
 
 app.get('/api/courses/:id', (req, res) => {
-  res.send(req.params.id);
+  const course = courses.find(c => c.id === parseInt(req.params.id));
+  if (!course) res.status(404).send('The course with the given ID was not found');
+  res.send(course); 
 })
 
 // in a hosted environment, port gets assigned dynamically, so we need to use:
