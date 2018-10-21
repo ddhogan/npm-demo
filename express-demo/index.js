@@ -40,7 +40,7 @@ app.post('/api/courses', (req, res) => {
 // Retrieve
 app.get('/api/courses/:id', (req, res) => {
   const course = courses.find(c => c.id === parseInt(req.params.id));
-  if (!course) res.status(404).send('The course with the given ID was not found');
+  if (!course) return res.status(404).send('The course with the given ID was not found');
   res.send(course); 
 })
 
@@ -48,15 +48,12 @@ app.get('/api/courses/:id', (req, res) => {
 app.put('/api/courses/:id', (req, res) => {
   // find the course
   const course = courses.find(c => c.id === parseInt(req.params.id));
-  if (!course) res.status(404).send('The course with the given ID was not found');
+  if (!course) return res.status(404).send('The course with the given ID was not found');
    
   // validate the input
-  const { error } = validateCourse(req.body); // Object destructuring, can use {error} instead of result
-  if (error) { // was (result.error)
-    // RESTful convention is to return a response with HTTP status code 400: bad request
-    res.status(400).send(result.error.details[0].message);
-    return;
-  }
+  const { error } = validateCourse(req.body);
+  if (error) return res.status(400).send(result.error.details[0].message); // this is the same logic as from the POST request handler, but written as one line
+
   // update the course
   course.name = req.body.name;
   // return the course
@@ -73,7 +70,7 @@ function validateCourse(course) {
 // Delete
 app.delete('/api/courses/:id', (req, res) => {
   const course = courses.find(c => c.id === parseInt(req.params.id));
-  if (!course) res.status(404).send('The course with the given ID was not found');
+  if (!course) return res.status(404).send('The course with the given ID was not found');
 
   const index = courses.indexOf(course); //in our courses array, find the index of the course
   courses.splice(index, 1); //in the array, go to that index and delete one thing
