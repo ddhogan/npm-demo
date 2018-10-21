@@ -1,3 +1,4 @@
+const Joi = require('joi'); // Returns a class (hence the convention to use Uppercase for the const name). the joi package is for input validation
 const express = require('express'); //this returns a function, so we'll call it 'express'
 const app = express();
 
@@ -20,10 +21,16 @@ app.get('/api/courses', (req, res) => {
 })
 
 app.post('/api/courses', (req, res) => {
+  const schema = { //this is the shape of the course object
+    name: Joi.string().min(3).required(),
+  };
+
+  const result = Joi.validate(req.body, schema);
+  
   // input validation
-  if (!req.body.name || req.body.name.length < 3) {
+  if (result.error) {
     // RESTful convention is to return a response with HTTP status code 400: bad request
-    res.status(400).send("Name is required and should be minimum 3 characters");
+    res.status(400).send(result.error.details[0].message);
     return;
   }
 
