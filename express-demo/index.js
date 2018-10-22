@@ -4,8 +4,10 @@ const config = require('config');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const Joi = require('joi'); // Returns a class (hence the convention to use Uppercase for the const name). the joi package is for input validation
-const logger = require('./logger');
-const express = require('express'); //this returns a function, so we'll call it 'express'
+const logger = require('./middleware/logger');
+const courses = require('./routes/courses')
+const home = require('./routes/home')
+const express = require('express');
 const app = express();
 
 // two ways to access the node environment:
@@ -19,6 +21,9 @@ app.use(helmet()); // sets various http headers for security
 
 app.set('view engine', 'pug'); // when we set this, node will automatically load this module, so we don't have to require it
 app.set('views', './views');  // this is default case, put all the views in that folder. don't have to set this.
+
+app.use('/api/courses', courses); // for any route that starts with this url, use the router object in courses
+app.use('/', home);
 
 // Configuration
 console.log('Application Name: ' + config.get('name'));
@@ -38,84 +43,6 @@ app.use(function(req, res, next) {
   console.log("Authenticating..."); //  Let's pretend we want to log every request
   next(); // go to the next function in the req-res pipeline
 });
-
-// instead of a DB
-const courses = [
-  { id: 1, name: 'course 1' },
-  { id: 2, name: 'course 2' },
-  { id: 3, name: 'course 3' },
-];
-
-//app.get takes two arguments: the first is the url, and the second is a callback function, called a 'Route Handler'. The Route Handler takes two arguments: request and response.
-// Root
-app.get('/', (req, res) => {
-  // res.send('Hello World'); // this was what we had before
-  res.render('index', { title: 'My Express App', message: 'Hello' }); // this is how to render in pug
-});
-
-// Index
-app.get('/api/courses', (req, res) => {
-  //typically, here we'd get a list of courses from the db and return them, but for now...
-  res.send(courses);
-})
-
-// Create
-app.post('/api/courses', (req, res) => {
-  // validate the input
-  const { error } = validateCourse(req.body); // Object destructuring, can use {error} instead of result
-  if (error) { // was (result.error)
-    // RESTful convention is to return a response with HTTP status code 400: bad request
-    res.status(400).send(result.error.details[0].message);
-    return;
-  }
-  const course = {
-    id: courses.length + 1,
-    name: req.body.name,
-  };
-  courses.push(course);
-  res.send(course); // by convention, return the thing you just made
-})
-
-// Retrieve
-app.get('/api/courses/:id', (req, res) => {
-  const course = courses.find(c => c.id === parseInt(req.params.id));
-  if (!course) return res.status(404).send('The course with the given ID was not found');
-  res.send(course); 
-})
-
-// Update
-app.put('/api/courses/:id', (req, res) => {
-  // find the course
-  const course = courses.find(c => c.id === parseInt(req.params.id));
-  if (!course) return res.status(404).send('The course with the given ID was not found');
-   
-  // validate the input
-  const { error } = validateCourse(req.body);
-  if (error) return res.status(400).send(result.error.details[0].message); // this is the same logic as from the POST request handler, but written as one line
-
-  // update the course
-  course.name = req.body.name;
-  // return the course
-  res.send(course);
-})
-
-function validateCourse(course) {
-  const schema = { //this is the shape of the course object
-    name: Joi.string().min(3).required(),
-  };
-  return Joi.validate(course, schema);
-}
-
-// Delete
-app.delete('/api/courses/:id', (req, res) => {
-  const course = courses.find(c => c.id === parseInt(req.params.id));
-  if (!course) return res.status(404).send('The course with the given ID was not found');
-
-  const index = courses.indexOf(course); //in our courses array, find the index of the course
-  courses.splice(index, 1); //in the array, go to that index and delete one thing
-
-  res.send(course);  //by convention, return the thing that was just deleted
-})
 
 // in a hosted environment, port gets assigned dynamically, so we need to use:
 // environment variable 'PORT'
