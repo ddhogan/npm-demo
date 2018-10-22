@@ -1,3 +1,5 @@
+const morgan = require('morgan');
+const helmet = require('helmet');
 const Joi = require('joi'); // Returns a class (hence the convention to use Uppercase for the const name). the joi package is for input validation
 const logger = require('./logger');
 const express = require('express'); //this returns a function, so we'll call it 'express'
@@ -6,7 +8,10 @@ const app = express();
 app.use(express.json());  //this adds a piece of middleware that allow use to parse JSON objects in the body of the request
 app.use(express.urlencoded({ extended: true }));  // key=value&key=value
 app.use(express.static('public')); // This will be a directory containing all the static assets (CSS, images, etc)
-// The most basic custom middleware
+app.use(helmet()); // sets various http headers for security
+app.use(morgan('tiny')); //logs every http request to the console so you can see what happened
+
+// This here is the most basic custom middleware
 app.use(logger);
 
 // Another middleware, this time for authentication.  Note that they're called in sequence.
