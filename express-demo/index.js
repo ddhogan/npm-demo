@@ -4,7 +4,8 @@ const express = require('express'); //this returns a function, so we'll call it 
 const app = express();
 
 app.use(express.json());  //this adds a piece of middleware that allow use to parse JSON objects in the body of the request
-
+app.use(express.urlencoded({ extended: true }));  // key=value&key=value
+app.use(express.static('public')); // This will be a directory containing all the static assets (CSS, images, etc)
 // The most basic custom middleware
 app.use(logger);
 
