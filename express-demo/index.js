@@ -1,6 +1,6 @@
 const startupDebugger = require('debug')('app:startup');
 const dbDebugger = require('debug')('app:db');
-const config = requre('config');
+const config = require('config');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const Joi = require('joi'); // Returns a class (hence the convention to use Uppercase for the const name). the joi package is for input validation
@@ -17,10 +17,13 @@ app.use(express.urlencoded({ extended: true }));  // key=value&key=value
 app.use(express.static('public')); // This will be a directory containing all the static assets (CSS, images, etc)
 app.use(helmet()); // sets various http headers for security
 
+app.set('view engine', 'pug'); // when we set this, node will automatically load this module, so we don't have to require it
+app.set('views', './views');  // this is default case, put all the views in that folder. don't have to set this.
+
 // Configuration
 console.log('Application Name: ' + config.get('name'));
 console.log('Mail Server: ' + config.get('mail.host'));
-console.log('Mail Password: ' + config.get('mail.password'));
+console.log('Mail Password: ' + config.get('mail.password'));  // In terminal, we did `export app_password=1234` always prefix the name of the password with the app it's associated with
 
 if (app.get('env') === 'development') {
   app.use(morgan('tiny')); // we want to limit the number of middlewares in production since they impact performance
@@ -46,7 +49,8 @@ const courses = [
 //app.get takes two arguments: the first is the url, and the second is a callback function, called a 'Route Handler'. The Route Handler takes two arguments: request and response.
 // Root
 app.get('/', (req, res) => {
-  res.send('Hello World');
+  // res.send('Hello World'); // this was what we had before
+  res.render('index', { title: 'My Express App', message: 'Hello' }); // this is how to render in pug
 });
 
 // Index
