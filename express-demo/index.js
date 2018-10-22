@@ -1,3 +1,5 @@
+const startupDebugger = require('debug')('app:startup');
+const dbDebugger = require('debug')('app:db');
 const config = requre('config');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -22,7 +24,7 @@ console.log('Mail Password: ' + config.get('mail.password'));
 
 if (app.get('env') === 'development') {
   app.use(morgan('tiny')); // we want to limit the number of middlewares in production since they impact performance
-  console.log('Morgan enabled...');
+  startupDebugger('Morgan enabled...');
 }
 
 // This here is the most basic custom middleware
