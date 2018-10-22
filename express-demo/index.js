@@ -3,7 +3,6 @@ const dbDebugger = require('debug')('app:db');
 const config = require('config');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const Joi = require('joi'); // Returns a class (hence the convention to use Uppercase for the const name). the joi package is for input validation
 const logger = require('./middleware/logger');
 const courses = require('./routes/courses')
 const home = require('./routes/home')

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router(); // here, instead of working with the 'app' object, we work with the 'router' object
+const Joi = require('joi'); // Returns a class (hence the convention to use Uppercase for the const name). the joi package is for input validation
 
 // instead of a DB
 const courses = [
