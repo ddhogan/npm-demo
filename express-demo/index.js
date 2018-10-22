@@ -1,3 +1,4 @@
+const config = requre('config');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const Joi = require('joi'); // Returns a class (hence the convention to use Uppercase for the const name). the joi package is for input validation
@@ -13,6 +14,10 @@ app.use(express.json());  //this adds a piece of middleware that allow use to pa
 app.use(express.urlencoded({ extended: true }));  // key=value&key=value
 app.use(express.static('public')); // This will be a directory containing all the static assets (CSS, images, etc)
 app.use(helmet()); // sets various http headers for security
+
+// Configuration
+console.log('Application Name: ' + config.get('name'));
+console.log('Mail Server: ' + config.get('mail.host'));
 
 if (app.get('env') === 'development') {
   app.use(morgan('tiny')); // we want to limit the number of middlewares in production since they impact performance
