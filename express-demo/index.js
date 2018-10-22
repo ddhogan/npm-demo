@@ -18,6 +18,7 @@ app.use(helmet()); // sets various http headers for security
 // Configuration
 console.log('Application Name: ' + config.get('name'));
 console.log('Mail Server: ' + config.get('mail.host'));
+console.log('Mail Password: ' + config.get('mail.password'));
 
 if (app.get('env') === 'development') {
   app.use(morgan('tiny')); // we want to limit the number of middlewares in production since they impact performance
